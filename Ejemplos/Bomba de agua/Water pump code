@@ -1,4 +1,4 @@
-#!/usr/bin/python
+
 
 # Import required libraries
 import sys
@@ -48,4 +48,4 @@ GPIO.add_event_callback(channel, soilsensor)
 # Infinte loop to keep our script running
 while True:
 	# Tells our script to wait 0.1 of a second so the script doesnt hog all of the CPU
-time.sleep(0.1)
+time.sleep(0.1))
