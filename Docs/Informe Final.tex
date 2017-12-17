@@ -1,0 +1,128 @@
+\documentclass[12pt,letterpaper]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{amssymb, amsmath, amsbsy}
+\usepackage{upgreek}
+\usepackage{mathrsfs}
+\graphicspath{ {c:/Users/hunte/Desktop/images/}}
+\title{Proyecto Microcontroladores: K-9 Control}
+\author{Mónica María Morales Jimenez / Dylan Ronan Sturm Trigueros}
+\newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
+pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
+colorlinks=true,linkcolor={black},citecolor={black},
+urlcolor={black}}
+\usepackage[\MYhyperrefoptions]{hyperref}
+
+
+\begin{document}
+\hypersetup{pdftitle={Proyecto Microcontroladores: K-9 Control},
+pdfsubject={BINGE-61, Microcontroladores },
+pdfauthor={Mónica María Morales Jimenez Dylan Ronan Sturm Trigueros},
+pdfkeywords={Microcontroladores, K-9 control, microcontrolador}}
+\renewcommand{\leftmark}{UNIVERSIDAD LATINA DE COSTA RICA -- BINGE-61 Microcontroladores}
+
+\maketitle
+
+
+\begin{abstract}
+Se realizará un sistema de control para el cuido de una mascota.
+\end{abstract}
+
+\section{Descripción del circuito}
+
+Se realizará un sistema, en el cual, se podrá cuidar a una mascota, controlando la cantidad de alimento y de agua que es servido sin la necesidad de estar en la casa; todo esto, por medio del uso de Internet, permitiendo cumplir estas funciones esenciales. 
+
+\section{Requerimientos}
+
+\begin{itemize}
+	\item Se debe controlar una bomba de agua, la cual, va a permitir un flujo de agua de un tanque hasta el recipiente de agua para la mascota.
+	\item Control del servo motor, para permitir el paso del alimento que proviene del tanque de alimento hacia el recipiente.
+	\item Construcción de una maqueta, que permita almacenar ambos tanques, tanto de alimento, como el de agua, que se pueda portar el microcontrolador que se va a utilizar y por último, los recipientes de alimento y agua.
+	\item Obtener una medición del nivel actual de los tanques y recipientes, lo que permitirá enviar alguna alerta sobre su estado actual; esto se debe realizar por medio de sensores.
+	\item Conexion del dispositivo a Internet, por medio de un modulo que permita WiFi
+	\item Aplicación donde permita el control de la cantidad de alimentos y agua que van a ser servidos y tener un control de la cantidad de agua y alimento que se encuentran en los recipientes y en los tanques. 
+\end{itemize}
+Opcionales:
+
+\begin{itemize}
+	\item En caso de ser necesario, la creación de una página web para el uso del sistema.
+	\item Usar una cámara, para tener a disposición la captura de imágenes o video de ser posible, de ser así, se debe considerar un espacio para ubicarla en la maqueta.
+\end{itemize}
+
+\section{Descripción de la solucóon}
+
+\begin{itemize}
+
+\item\textbf{Raspberry Pi 3:} La implementación de una Raspberry Pi 3B, se da debido a que esta permite una mayor facilidad de trabajo; este microcontrolador corre con un sistema operativo base a Linux, que permite utilizar un servidor Web, por medio de Apache2 y bien, utilizar python para controlar los dispositios (Servo motor y bomba de agua), el uso de una Raspi 3, permite implementar una cámara que brinda un stream en vivo cuando se desea, todo esto de ser implementado con Arduino, hubiese sido imposible.\\
+
+\item\textbf{Bomba de agua:} Se utilizó una bomba de agua en lugar de una válvula, debido a que esta  permite darle un paso al agua por medio de la succión que realiza el dispositivo, en cambio una válvula depende de la altura y bien la presión en la que se encuentre el agua para poder darle a esta un flujo constante.\\
+
+\item\textbf{Servo Motor:} Se utilizó un servo debido a que este permite selección de la posición de su eje.\\
+
+\item\textbf{Raspi Cam v2:} El modelo permite una conexion casi inmediata a la Raspberry Pi, por medio de una librería Git puede ser accesada por medio de un mismo servidor Web. \\
+
+\end{itemize}
+
+\subsection{Esquemático del circuito}
+\includegraphics[scale=0.3]{rasp}
+
+La conmutación de un relé permite el control de la bomba de agua, representada por medio de un inductor. Al momento de ese recibir un pulso por parte de la Raspberry, el transistor conmutará permitiendo el cambio de estado del relé y así, activando la bomba.
+
+\subsection{Descripción del código}
+\begin{itemize}
+	\item {Servo Motor:}\\
+	\begin{verbatim}
+	try:
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setup(21,GPIO.OUT)
+	p = GPIO.PWM(21,50)
+	p.start(0)
+	
+	p.ChangeDutyCycle(10)
+	time.sleep(4)
+	p.ChangeDutyCycle(6.8)
+	time.sleep(0.5)
+	
+	
+	p.stop()
+	GPIO.cleanup()
+	
+	\end{verbatim}
+	\item{Bomba de agua:}\\
+	\begin{verbatim}
+	GPIO.setmode(GPIO.BOARD)   
+	GPIO.setup(13,GPIO.OUT)   
+	
+	GPIO.output(13, GPIO.HIGH)
+	time.sleep (15)
+	GPIO.output(13, GPIO.LOW)
+	time.sleep(1)
+	\end{verbatim}
+\end{itemize}
+
+\section{Análisis de Resultados}
+Los resultados obtenidos fueron exitosos, se logra tener control de tanto la bomba de agua como del servo, además de la implementación de una cámara y un servidor Web del cual se le da uso para el control del sistema.\\
+La implementación de un sensor para la medición del alimento y agua no fue posible ya que se dificultó la medición de un peso determinado o bien un nivel.\\
+Utilizar una Raspberry permite que estos requerimientos faltantes sean posibles, por lo que se deben tomar como un aspecto a mejorar.
+
+\section{Conclusiones}
+\begin{itemize}
+	\item No es viable utilizar un arduino, ya que se limita la implementación de la cámara para ver en tiempo real.
+	\item La Raspberry Pi fue viable, ya que, permitió la creación de un servidor.
+	\item La bomba de agua fue la mejor opción; por medio de un pulso, se logra el comportamiento deseado
+	\item No es viable un arduino, ya que limita la utilización de un servidor.
+	\item Se consideró la implmenatción de sensores de medición, pero por falta de tiempo y de la dificultad que conllevaba no se utilizó.
+	\item Se utilizó acrilico para la creación de la maqueta, ya que era el material mas flexible para su elaboración.
+	
+\end{itemize}
+\section{Próximos pasos}
+
+\begin{itemize}
+	\item Mejorar la implementación del servidor Web para el control del sistema como uno solo, donde, en un solo lugar se tenga todos los controles, sin la necesidad de accesar a un link para tales funciones y a otro para otras.
+	\item Implementar los sensores de medición para que, por medio de estos tener un sistema mas completo de control.
+	\item Un posible uso de una aplicación, sin la necesidad de tener que ingresar a una página Web, sino, tener todo el control desde una sola aplicacion. Con el fin de crear una intefaz más amigable con la persona.
+\end{itemize}
+
+\end{document}
